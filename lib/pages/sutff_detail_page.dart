@@ -1,6 +1,8 @@
 import 'package:borrowed_stuff/helpers/validator.dart';
+import 'package:brasil_fields/formatter/telefone_input_formatter.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:borrowed_stuff/components/back_dialog.dart';
@@ -24,6 +26,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
   final _dateController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
 
   var _currentStuff = Stuff();
@@ -36,6 +39,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
       _dateController.text = _dateFormat.format(_currentStuff.loanDate);
       _descriptionController.text = _currentStuff.description;
       _nameController.text = _currentStuff.contactName;
+      _phoneController.text = _currentStuff.phone;
     }
   }
 
@@ -44,6 +48,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
     _dateController.clear();
     _descriptionController.clear();
     _nameController.clear();
+    _phoneController.clear();
     super.dispose();
   }
 
@@ -91,6 +96,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
           _buildDescriptionInputField(),
           _buildNameInputField(),
           _buildConfirmButton(),
+          _buildPhoneInputField(),
         ],
       ),
     );
@@ -117,7 +123,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
         _currentStuff.loanDate = date;
       },
       validator: (date) {
-        return Validator.isEmptyDate(date);
+        return Validator.dateValidator(date);
       },
     );
   }
@@ -154,6 +160,28 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
       controller: _nameController,
       validator: (value) {
         return Validator.isEmptyText(value);
+      },
+    );
+  }
+
+  _buildPhoneInputField({Function(String) onSaved}) {
+    return TextFormField(
+      decoration: InputDecoration(
+        icon: Icon(Icons.phone),
+        labelText: 'Contato',
+      ),
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        TelefoneInputFormatter()
+      ],
+      onSaved: (value) {
+        setState(() {
+          _currentStuff.phone = value;
+        });
+      },
+      controller: _phoneController,
+      validator: (value) {
+        return Validator.phoneNumberValidator(value);
       },
     );
   }

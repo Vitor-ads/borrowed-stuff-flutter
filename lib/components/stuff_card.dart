@@ -9,12 +9,14 @@ class StuffCard extends StatelessWidget {
   final Stuff stuff;
   final Function onEdit;
   final Function onDelete;
+  final Function onCall;
 
   StuffCard({
     Key key,
     this.stuff,
     this.onEdit,
     this.onDelete,
+    this.onCall,
   }) : super(key: key);
 
   @override
@@ -44,6 +46,7 @@ class StuffCard extends StatelessWidget {
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
       child: _buildStuffCard(stuff),
+      direction: Axis.horizontal,
       actions: <Widget>[
         IconSlideAction(
           caption: 'Editar',
@@ -56,6 +59,12 @@ class StuffCard extends StatelessWidget {
           color: Colors.red,
           icon: Icons.delete,
           onTap: onDelete,
+        ),
+        IconSlideAction(
+          caption: 'Ligar',
+          color: Colors.green,
+          icon: Icons.phone,
+          onTap: onCall,
         ),
       ],
     );
